@@ -1,0 +1,226 @@
+#include <iostream>
+#include <cstring>
+//coada de caractere!!!!!
+using namespace std;
+
+class Nod {
+    char info;
+    Nod *next;
+public:
+    Nod() {
+        next = NULL;
+    }
+
+    void set_info(char i) {
+        info = i;
+    }
+
+    void set_nod(Nod *m) {
+        next = m;
+    }
+
+    int get_info() { return info; }
+
+    Nod *get_next() { return next; }
+
+    Nod(char a, Nod *urm) {
+        info = a;
+        next = urm;
+    }
+
+    ~Nod() {
+        next = NULL;
+    }
+};
+
+
+class Coada_de_caractere {
+
+    Nod *prim;
+    Nod *ultim;
+public:
+    Coada_de_caractere() {
+        prim = NULL;
+        ultim = NULL;
+
+    }
+
+    Coada_de_caractere(const Coada_de_caractere &ob) {
+        prim->set_info(ob.prim->get_info());
+        prim->set_nod(ob.prim->get_next());
+        ultim->set_nod(ob.ultim->get_next());
+        ultim->set_info(ob.ultim->get_info());
+    }
+
+    ~Coada_de_caractere();
+
+
+    void Push(char info);
+
+    char Pop();
+
+    int isempty();
+
+    friend ostream &operator<<(ostream &os, Coada_de_caractere &ob);
+
+    friend istream &operator>>(istream &os, Coada_de_caractere &ob);
+
+    Coada_de_caractere operator+(Coada_de_caractere &ob);
+
+    Coada_de_caractere operator-(Coada_de_caractere &ob);
+};
+
+Coada_de_caractere Coada_de_caractere::operator-(Coada_de_caractere &ob) {
+
+    int k = 0, i;
+    Coada_de_caractere c;
+    while (prim != NULL and ob.prim != NULL) {
+        if ((int) prim->get_info() > (int) ob.prim->get_info())
+            c.Push(prim->get_info());
+        else
+            c.Push(ob.prim->get_info());
+        prim = prim->get_next();
+        ob.prim = ob.prim->get_next();
+    }
+    cout << c;
+    return c;
+}
+
+
+Coada_de_caractere Coada_de_caractere::operator+(Coada_de_caractere &ob) {
+    char v[100];
+
+    int k = 0, i;
+    Coada_de_caractere e;
+
+    while (prim) {
+        v[k++] = prim->get_info();
+        prim = prim->get_next();
+    }
+    prim = e.prim;
+    while (ob.prim) {
+        v[k++] = ob.prim->get_info();
+        ob.prim = ob.prim->get_next();
+    }
+
+    Nod *nou;
+    nou = new Nod;
+    nou->set_info(v[0]);
+
+    nou->set_nod(NULL);
+
+    e.ultim = nou;
+    e.prim = nou;
+
+
+    for (i = 1; i < k; i++) {
+
+
+        nou = new Nod;
+        nou->set_info(v[i]);
+        nou->set_nod(NULL);
+        e.ultim->set_nod(nou);
+        e.ultim = nou;
+
+    }
+    cout << e;
+    return e;
+}
+
+istream &operator>>(istream &os, Coada_de_caractere &ob) {
+    int n;
+    char x;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        os >> x;
+        ob.Push(x);
+    }
+
+    return os;
+}
+
+ostream &operator<<(ostream &os, Coada_de_caractere &ob) {
+    Nod *q;
+    if (ob.prim == NULL) {
+        os << "coada vida";
+    }
+    //trebuie o copie a lui prim altfel se face NULL dupa fiecare afisare
+
+
+    while (ob.prim != NULL) {
+        q=ob.prim;
+        os << ob.prim->get_info() << " ";
+        ob.prim = ob.prim->get_next();
+        delete q;
+    }
+
+    os << endl;
+    return os;
+
+}
+
+Coada_de_caractere::~Coada_de_caractere() {
+    for (Nod *p = prim; p;) {
+
+        Nod *aux = p;
+        p = p->get_next();
+        delete aux;
+    }
+}
+
+void Coada_de_caractere::Push(char x) {
+
+    Nod *nou = new Nod;
+    nou->set_info(x);
+    nou->set_nod(NULL);
+    if (prim == NULL) {
+        nou->set_nod(NULL);
+
+        prim = ultim = nou;
+    } else {
+
+        nou->set_nod(NULL);
+
+        ultim->set_nod(nou);
+        ultim = nou;
+    }
+
+
+}
+
+char Coada_de_caractere::Pop() {
+    Nod *p;
+    p = prim->get_next();
+    char x = '0';
+    x = prim->get_info();
+    if (prim != NULL) {
+        delete prim;
+        prim = p;
+    }
+    return x;
+}
+
+int Coada_de_caractere::isempty() {
+    if (prim == NULL)
+        return 1;
+
+    return 0;
+}
+
+
+int main() {
+    char t[] = "l";
+    char *d = t;
+    Coada_de_caractere a, b, c ;
+    Coada_de_caractere e, f, g;
+    cin >> a;
+    //a.isempty();
+    //a.Push(*d);
+    //a.Pop();
+    cin >> b;
+    f=a;
+    g=b;
+    c = a - b;
+    e = f + g;
+
+}
